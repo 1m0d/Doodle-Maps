@@ -1,5 +1,18 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+char *file_to_string(FILE *file){
+  char *file_contents;
+  long file_size;
+  fseek(file, 0, SEEK_END);
+  file_size = ftell(file);
+  rewind(file);
+  file_contents = malloc(file_size * (sizeof(char)));
+  fread(file_contents, sizeof(char), file_size, file);
+  fclose(file);
+  return file_contents;
+}
 
 int main(int argc, char *argv[]){
   char *extension = ".json";
