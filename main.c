@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "cJSON.h"
+
+typedef struct{
+  int size[2];
+  int tiles_of_interest[2][2];
+  /*int *tiles;*/
+}ParsedMap;
 
 char *file_to_string(FILE *file){
   char *file_contents;
@@ -13,6 +20,34 @@ char *file_to_string(FILE *file){
   fclose(file);
   return file_contents;
 }
+
+ParsedMap parse_map(char *map_json){
+  cJSON *root = cJSON_Parse(map_json);
+  if (!root){
+    printf("Error in file before: [%s]\n", cJSON_GetErrorPtr());
+    exit(EXIT_FAILURE);
+  }
+
+  cJSON *map = cJSON_GetObjectItem(root, "map");
+  cJSON *size = cJSON_GetObjectItem(map, "size");
+  cJSON *tiles = cJSON_GetObjectItem(map, "tiles");
+  cJSON *tiles_of_interest = cJSON_GetObjectItem(map, "tiles_of_interest");
+  //TODO check for validity
+
+  ParsedMap parsed_map;
+  parsed_map.size[0] = cJSON_GetArrayItem(size, 0)->valueint;
+  parsed_map.size[1] = cJSON_GetArrayItem(size, 1)->valueint;
+
+  for(int i = 0; i < 2; i++){
+    cJSON *sub_arr = cJSON_GetArrayItem(tiles_of_interest, i);
+    for(int j = 0; j < 2; j++){
+      parsed_map.tiles_of_interest[i][j] = cJSON_GetArrayItem(sub_arr, j)->valueint;
+    }
+  }
+
+  return parsed_map;
+}
+
 
 int main(int argc, char *argv[]){
   char *extension = ".json";
@@ -29,6 +64,9 @@ int main(int argc, char *argv[]){
     printf("The given argument must be a .json file!\n");
     return 1;
   }
+
+  char *map_json = file_to_string(map_file);
+  parse_map(map_json);
   //map_parsed = parse_json(map_json)
   //map_graph = graph(map_parsed)
   //check if path is possible
