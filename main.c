@@ -54,15 +54,15 @@ int main(int argc, char *argv[]){
   FILE *map_file;
 
   if (argc != 2){
-    printf("You must add exactly 1 argument!\n");
-    return 1;
+    printf("You must have exactly 1 argument!\n");
+    return EXIT_FAILURE;
   }
   if (strstr(argv[1], extension)){
     map_file = fopen(argv[1], "r");
   }
   else{
     printf("The given argument must be a .json file!\n");
-    return 1;
+    return EXIT_FAILURE;
   }
 
   char *map_json = file_to_string(map_file);
