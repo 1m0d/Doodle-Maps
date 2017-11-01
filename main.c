@@ -4,9 +4,14 @@
 #include "cJSON.h"
 
 typedef struct{
+  int coordinates[2];
+  int weight;
+}Tile;
+
+typedef struct{
   int size[2];
   int tiles_of_interest[2][2];
-  /*int *tiles;*/
+  Tile *tiles;
 }ParsedMap;
 
 char *file_to_string(FILE *file){
@@ -45,6 +50,37 @@ ParsedMap parse_map(char *map_json){
     }
   }
 
+  //count number of tiles for memory allocation
+  int tile_count = 0;
+  cJSON *row = tiles->child;
+  for (int i = 0; i < cJSON_GetArraySize(tiles); i++){
+    for (int j = 0; j < cJSON_GetArraySize(row); j++){
+      tile_count++;
+    }
+    row = row->next;
+  }
+
+  parsed_map.tiles = malloc(sizeof(Tile) * tile_count);
+  if (parsed_map.tiles == NULL){
+    printf("Out of memory! Exiting...\n");
+    exit(EXIT_FAILURE);
+  }
+
+  //parse tiles
+  row = tiles->child;
+  int index = 0;
+  for (int i = 0; i < cJSON_GetArraySize(tiles); i++){
+    for (int j = 0; j < cJSON_GetArraySize(row); j++){
+      cJSON *sub_arr = cJSON_GetArrayItem(row, j);
+      parsed_map.tiles[index].weight = atoi(row->string);
+      for(int k = 0; k < 2; k++){
+        parsed_map.tiles[index].coordinates[k] = cJSON_GetArrayItem(sub_arr, k)->valueint;
+      }
+      index++;
+    }
+    row = row->next;
+  }
+
   return parsed_map;
 }
 
@@ -81,9 +117,6 @@ int main(int argc, char *argv[]){
   /*struct Node *neighbors;*/
 /*}Node;*/
 
-/*typedef struct{*/
-  /*int x, y, difficulty;*/
-/*}Tile;*/
 
 ////graph
 //typedef struct{
