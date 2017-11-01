@@ -33,16 +33,19 @@ ParsedMap parse_map(char *map_json){
     exit(EXIT_FAILURE);
   }
 
+  //parse keys
   cJSON *map = cJSON_GetObjectItem(root, "map");
   cJSON *size = cJSON_GetObjectItem(map, "size");
   cJSON *tiles = cJSON_GetObjectItem(map, "tiles");
   cJSON *tiles_of_interest = cJSON_GetObjectItem(map, "tiles_of_interest");
   //TODO check for validity
 
+  //parse size
   ParsedMap parsed_map;
   parsed_map.size[0] = cJSON_GetArrayItem(size, 0)->valueint;
   parsed_map.size[1] = cJSON_GetArrayItem(size, 1)->valueint;
 
+  //parse tiles of interest
   for(int i = 0; i < 2; i++){
     cJSON *sub_arr = cJSON_GetArrayItem(tiles_of_interest, i);
     for(int j = 0; j < 2; j++){
