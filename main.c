@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 #include "cJSON.h"
 
 typedef struct{
@@ -97,6 +98,40 @@ ParsedMap parse_map(char *map_json){
   return parsed_map;
 }
 
+void draw_map(ParsedMap parsed_map){
+  //TODO compute needed memory
+  char svg[100000];
+  char hex[200];
+  sprintf(svg, "<svg id=\"map\" width=\"%d\" height = \"%d\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n",
+          parsed_map.draw_area[0], parsed_map.draw_area[1]);
+
+  int height = parsed_map.hexagon_height;
+  int width = sqrt(3)/2 * height;
+
+  int point1[2] = {width / 2, height};
+  int point2[2] = {0, height * 3/4};
+  int point3[2] = {0, height * 1/4};
+  int point4[2] = {width / 2, 0};
+  int point5[2] = {width, height * 1/4};
+  int point6[2] = {width, height * 3/4};
+  int verticalpush = height * 3/4;
+
+  //TODO differentiate between weights
+  for(int i = 0; i < parsed_map.size[1]; i++){
+    int horizontal_margin = 30;
+    if (i % 2 != 0)
+      horizontal_margin += width/2;
+    for(int j = 0; j < parsed_map.size[0]; j++){
+      sprintf(hex, "<polygon class=\"hex\" points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
+                    point1[0], point1[1], point2[0], point2[1], point3[0], point3[1], point4[0], point4[1], point5[0], point5[1], point6[0], point6[1],
+                    horizontal_margin+j*width, 40+i*verticalpush);
+      strcat(svg, hex);
+    }
+  }
+  strcat(svg, "</svg>");
+  printf("%s", svg);
+}
+
 
 int main(int argc, char *argv[]){
   char *extension = ".json";
@@ -115,7 +150,8 @@ int main(int argc, char *argv[]){
   }
 
   char *map_json = file_to_string(map_file);
-  parse_map(map_json);
+  ParsedMap parsed_map = parse_map(map_json);
+  draw_map(parsed_map);
   //map_parsed = parse_json(map_json)
   //map_graph = graph(map_parsed)
   //check if path is possible
