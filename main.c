@@ -12,6 +12,8 @@ typedef struct{
   int size[2];
   int tiles_of_interest[2][2];
   Tile *tiles;
+  int hexagon_height;
+  int draw_area[2];
 }ParsedMap;
 
 char *file_to_string(FILE *file){
@@ -38,6 +40,9 @@ ParsedMap parse_map(char *map_json){
   cJSON *size = cJSON_GetObjectItem(map, "size");
   cJSON *tiles = cJSON_GetObjectItem(map, "tiles");
   cJSON *tiles_of_interest = cJSON_GetObjectItem(map, "tiles_of_interest");
+  cJSON *svg = cJSON_GetObjectItem(root, "svg");
+  cJSON *hexagon_height = cJSON_GetObjectItem(svg, "hexagon_height");
+  cJSON *draw_area = cJSON_GetObjectItem(svg, "draw_area");
   //TODO check for validity
 
   //parse size
@@ -83,6 +88,11 @@ ParsedMap parse_map(char *map_json){
     }
     row = row->next;
   }
+
+  //parse svg
+  parsed_map.hexagon_height = hexagon_height->valueint;
+  parsed_map.draw_area[0] = cJSON_GetArrayItem(draw_area, 0)->valueint;
+  parsed_map.draw_area[1] = cJSON_GetArrayItem(draw_area, 1)->valueint;
 
   return parsed_map;
 }
