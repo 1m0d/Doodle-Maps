@@ -102,8 +102,31 @@ void draw_map(ParsedMap parsed_map){
   //TODO compute needed memory
   char svg[100000];
   char hex[200];
-  sprintf(svg, "<svg id=\"map\" width=\"%d\" height = \"%d\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n",
+  sprintf(svg, "<svg id=\"map\" width=\"%d\" height = \"%d\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n",
           parsed_map.draw_area[0], parsed_map.draw_area[1]);
+
+  char *hex_images = "<defs>\n"
+                     "<pattern id=\"pattern0\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/volcanos.png\" />\n"
+                     "</pattern>\n"
+                     "<pattern id=\"pattern1\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/grassland.png\" />\n"
+                     "</pattern>\n"
+                     "<pattern id=\"pattern2\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/cactus.png\" />\n"
+                     "</pattern>\n"
+                     "<pattern id=\"pattern3\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/jungle.png\" />\n"
+                     "</pattern>\n"
+                     "<pattern id=\"pattern4\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/mountains.png\" />\n"
+                     "</pattern>\n"
+                     "<pattern id=\"pattern5\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/evergreenmountains.png\" />\n"
+                     "</pattern>\n"
+                     "</defs>";
+
+  strcat(svg, hex_images);
 
   int height = parsed_map.hexagon_height;
   int width = sqrt(3)/2 * height;
@@ -122,7 +145,7 @@ void draw_map(ParsedMap parsed_map){
     if (i % 2 != 0)
       horizontal_margin += width/2;
     for(int j = 0; j < parsed_map.size[0]; j++){
-      sprintf(hex, "<polygon class=\"hex\" points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
+      sprintf(hex, "<polygon class=\"hex\" fill=\"url(#pattern1)\" stroke=\"black\" stroke-width=\"1\" points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
                     point1[0], point1[1], point2[0], point2[1], point3[0], point3[1], point4[0], point4[1], point5[0], point5[1], point6[0], point6[1],
                     horizontal_margin+j*width, 40+i*verticalpush);
       strcat(svg, hex);
