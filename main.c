@@ -98,6 +98,14 @@ ParsedMap parse_map(char *map_json){
   return parsed_map;
 }
 
+int get_tile_weight(ParsedMap map, int coordinates[2]){
+  for(int i = 0; i < map.size[0] * map.size[1]; i++){
+    if(coordinates[0] == map.tiles[i].coordinates[0] && coordinates[1] == map.tiles[i].coordinates[1])
+      return map.tiles[i].weight;
+  }
+  return 0;
+}
+
 void draw_map(ParsedMap parsed_map){
   //TODO compute needed memory
   char svg[100000];
