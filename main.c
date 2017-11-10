@@ -148,14 +148,16 @@ void draw_map(ParsedMap parsed_map){
   int verticalpush = height * 3/4;
 
   //TODO differentiate between weights
-  for(int i = 0; i < parsed_map.size[1]; i++){
+  for(int row = 0; row < parsed_map.size[1]; row++){
     int horizontal_margin = 30;
-    if (i % 2 != 0)
+    if (row % 2 != 0)
       horizontal_margin += width/2;
-    for(int j = 0; j < parsed_map.size[0]; j++){
-      sprintf(hex, "<polygon class=\"hex\" fill=\"url(#pattern1)\" stroke=\"black\" stroke-width=\"1\" points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
-                    point1[0], point1[1], point2[0], point2[1], point3[0], point3[1], point4[0], point4[1], point5[0], point5[1], point6[0], point6[1],
-                    horizontal_margin+j*width, 40+i*verticalpush);
+    for(int column = 0; column < parsed_map.size[0]; column++){
+      int coordinates[2] = {row, column};
+      int weight = get_tile_weight(parsed_map, coordinates);
+      sprintf(hex, "<polygon class=\"hex\" fill=\"url(#pattern%d)\" stroke=\"black\" stroke-width=\"1\" points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
+                    weight, point1[0], point1[1], point2[0], point2[1], point3[0], point3[1], point4[0], point4[1], point5[0], point5[1], point6[0], point6[1],
+                    horizontal_margin + column * width, 40 + row * verticalpush);
       strcat(svg, hex);
     }
   }
