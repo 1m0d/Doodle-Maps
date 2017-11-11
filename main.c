@@ -13,6 +13,7 @@ typedef struct{
   int size[2];
   int tiles_of_interest[2][2];
   Tile *tiles;
+  int tile_count;
   int hexagon_height;
   int draw_area[2];
 }ParsedMap;
@@ -68,6 +69,8 @@ ParsedMap parse_map(char *map_json){
     }
     row = row->next;
   }
+
+  parsed_map.tile_count = tile_count;
 
   parsed_map.tiles = malloc(sizeof(Tile) * tile_count);
   if (parsed_map.tiles == NULL){
