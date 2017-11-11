@@ -207,20 +207,14 @@ ParsedMap parse_map(char *map_json){
   return parsed_map;
 }
 
-int get_tile_weight(ParsedMap map, int coordinates[2]){
-  for(int i = 0; i < map.size[0] * map.size[1]; i++){
-    if(coordinates[0] == map.tiles[i].coordinates[0] && coordinates[1] == map.tiles[i].coordinates[1])
-      return map.tiles[i].weight;
-  }
-  return 0;
-}
 
 void draw_map(ParsedMap parsed_map){
   //TODO compute needed memory
   char svg[100000];
   char hex[200];
-  sprintf(svg, "<svg id=\"map\" width=\"%d\" height = \"%d\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n",
-          parsed_map.draw_area[0], parsed_map.draw_area[1]);
+  sprintf(svg, "<svg id=\"map\" width=\"%d\" height = \"%d\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" "
+               "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n",
+               parsed_map.draw_area[0], parsed_map.draw_area[1]);
 
   char *hex_images = "<defs>\n"
                      "<pattern id=\"pattern0\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
@@ -256,7 +250,6 @@ void draw_map(ParsedMap parsed_map){
   int point6[2] = {width, height * 3/4};
   int verticalpush = height * 3/4;
 
-  //TODO differentiate between weights
   for(int row = 0; row < parsed_map.size[1]; row++){
     int horizontal_margin = 30;
     if (row % 2 != 0)
@@ -264,8 +257,10 @@ void draw_map(ParsedMap parsed_map){
     for(int column = 0; column < parsed_map.size[0]; column++){
       int coordinates[2] = {row, column};
       int weight = get_tile_weight(parsed_map, coordinates);
-      sprintf(hex, "<polygon class=\"hex\" fill=\"url(#pattern%d)\" stroke=\"black\" stroke-width=\"1\" points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
-                    weight, point1[0], point1[1], point2[0], point2[1], point3[0], point3[1], point4[0], point4[1], point5[0], point5[1], point6[0], point6[1],
+      sprintf(hex, "<polygon class=\"hex\" fill=\"url(#pattern%d)\" stroke=\"black\" stroke-width=\"1\" "
+                   "points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
+                    weight, point1[0], point1[1], point2[0], point2[1], point3[0], point3[1], point4[0], point4[1],
+                    point5[0], point5[1], point6[0], point6[1],
                     horizontal_margin + column * width, 40 + row * verticalpush);
       strcat(svg, hex);
     }
@@ -273,7 +268,6 @@ void draw_map(ParsedMap parsed_map){
   strcat(svg, "</svg>");
   printf("%s", svg);
 }
-
 
 int main(int argc, char *argv[]){
   char *extension = ".json";
@@ -295,31 +289,4 @@ int main(int argc, char *argv[]){
   ParsedMap parsed_map = parse_map(map_json);
   Graph graph = create_graph(parsed_map);
   draw_map(parsed_map);
-  //map_parsed = parse_json(map_json)
-  //map_graph = graph(map_parsed)
-  //check if path is possible
-  //paths = find_paths(map_graph)
-  //draw_map(map_parsed, paths)
 }
-
-//graph: nodes: connections to nodes w diff
-
-/*typedef struct Node{*/
-  /*int position[2];*/
-  /*struct Node *neighbors;*/
-/*}Node;*/
-
-
-////graph
-//typedef struct{
-//  nodes, connections w difficulty
-//}Graph;
-
-////find_path
-//shortest_path()
-//change all non-zero difficulty to 1
-//fastest_path()
-
-////draw_map
-//draw whole map
-//draw paths
