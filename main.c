@@ -34,6 +34,28 @@ typedef struct{
   int size;
 }Graph;
 
+int get_tile_weight(ParsedMap map, int coordinates[2]){
+  for(int i = 0; i < map.size[0] * map.size[1]; i++){
+    if(coordinates[0] == map.tiles[i].coordinates[0] && coordinates[1] == map.tiles[i].coordinates[1])
+      return map.tiles[i].weight;
+  }
+  return 0;
+}
+
+int coo2index(ParsedMap map, int coordinates[2]){
+  int index = 0;
+  for(int i = 0; i < map.tile_count; i++){
+    if(map.tiles[i].coordinates[0] == coordinates[0] && map.tiles[i].coordinates[1] == coordinates[1])
+      return index;
+    index++;
+  }
+  return index;
+}
+
+int *index2coo(ParsedMap map, int index){
+  return map.tiles[index].coordinates;
+}
+
 //TODO fix
 int **get_neighbours(ParsedMap map, int *neighbour_count){
   int even_row_offset[6][2] = {{-1, -1}, {-1, 0}, {0, 1}, {0, -1}, {1, 0}, {1, -1}};
