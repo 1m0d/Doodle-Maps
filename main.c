@@ -26,7 +26,8 @@ typedef struct{
 
 typedef struct{
   int distance_to_end;
-  struct Edge **edges;
+  int edges_count;
+  Edge **edges;
 }Node;
 
 typedef struct{
@@ -42,14 +43,14 @@ int get_tile_weight(ParsedMap map, int coordinates[2]){
   return 0;
 }
 
+//indices are solely used as primary keys, there is no correlation between a value and its incremented pair
 int coo2index(ParsedMap map, int coordinates[2]){
-  int index = 0;
   for(int i = 0; i < map.tile_count; i++){
     if(map.tiles[i].coordinates[0] == coordinates[0] && map.tiles[i].coordinates[1] == coordinates[1])
-      return index;
-    index++;
+      return i;
   }
-  return index;
+  printf("coo2index() called on non-existent or 0 weight tile: %d %d", coordinates[0], coordinates[1]);
+  exit(EXIT_FAILURE);
 }
 
 int *index2coo(ParsedMap map, int index){
@@ -99,7 +100,6 @@ int **get_neighbours(ParsedMap map, int *neighbour_count){
       if(neighbours_added == *neighbour_count)
         break;
   }
-  /*countPtr = &neighbour_count;*/
   return neighbours;
 }
 
@@ -118,6 +118,35 @@ Graph create_graph(ParsedMap map){
     edges[i].index_of_nodes[0] = neighbours[i][0];
     edges[i].index_of_nodes[1] = neighbours[i][1];
     edges[i].weight = get_tile_weight(map, index2coo(map, neighbours[i][0])) + get_tile_weight(map, index2coo(map, neighbours[i][1]));
+  }
+  for(int i = 0; i < edge_count; i++)
+    free(neighbours[i]);
+  free(neighbours);
+
+  //assign edges to nodes
+  for(int node_index = 0; node_index < graph.size; node_index++){
+    int node_edge_count = 0;
+    bool memory_allocated = false;
+    //first allocate memory, then assign pointers
+    for (int i = 0; i < 2; i++){
+      for(int edge_index = 0; edge_index < edge_count; edge_index++){
+        for(int j = 0; j < 2; j++){
+          if(edges[edge_index].index_of_nodes[j] == node_index){
+            if(!memory_allocated)
+              node_edge_count++;
+            else{
+              node_edge_count--;
+              nodes[node_index].edges[node_edge_count] = &(edges[edge_index]);
+            }
+          }
+        }
+      }
+      if (!memory_allocated){
+        nodes[node_index].edges = malloc(sizeof(Edge *) * node_edge_count);
+        nodes[node_index].edges_count = node_edge_count;
+        memory_allocated = true;
+      }
+    }
   }
 
   return graph;
@@ -288,5 +317,5 @@ int main(int argc, char *argv[]){
   char *map_json = file_to_string(map_file);
   ParsedMap parsed_map = parse_map(map_json);
   Graph graph = create_graph(parsed_map);
-  draw_map(parsed_map);
+  /*draw_map(parsed_map);*/
 }
