@@ -57,7 +57,24 @@ int *index2coo(ParsedMap map, int index){
   return map.tiles[index].coordinates;
 }
 
-//TODO fix
+int find_distance(ParsedMap map, int from, int to){
+  int *from_coos = index2coo(map, from);
+  int *to_coos = index2coo(map, to);
+
+  if (from_coos[1] == to_coos[1])
+    return abs(to_coos[0] - from_coos[0]);
+  else if (from_coos[0] == to_coos[0])
+    return abs(to_coos[1] - from_coos[1]);
+  else{
+    int dy = abs(to_coos[1] - from_coos[1]);
+    int dx = abs(to_coos[0] - from_coos[0]);
+    if(from_coos[0] < to_coos[0])
+      return dx + dy - ceil(dx / 2.0);
+    else
+      return dx + dy - floor(dx / 2.0);
+  }
+}
+
 int **get_neighbours(ParsedMap map, int *neighbour_count){
   int even_row_offset[6][2] = {{-1, -1}, {-1, 0}, {0, 1}, {0, -1}, {1, 0}, {1, -1}};
   int odd_row_offset[6][2] = {{-1, 0}, {-1, 1}, {0, 1}, {0, -1}, {1, 1}, {1, 0}};
@@ -149,6 +166,11 @@ Graph create_graph(ParsedMap map){
     }
   }
 
+  /*assign distance to nodes*/
+  for(int i = 0; i < graph.size; i++){
+    nodes[i].distance_to_end = find_distance(map, i, coo2index(map, map.tiles_of_interest[1]));
+    printf("node %d:%d distance_to_end: %d\n", map.tiles[i].coordinates[0], map.tiles[i].coordinates[1], nodes[i].distance_to_end);
+  }
   return graph;
 }
 
