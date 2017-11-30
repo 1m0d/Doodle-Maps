@@ -2,4 +2,4 @@ CC=gcc
 CFLAGS=-I. -g -lm
 
 main:
-	     $(CC) -o main.out main.c cJSON.c $(CFLAGS)
+	     $(CC) -o map_print main.c cJSON.c $(CFLAGS)
