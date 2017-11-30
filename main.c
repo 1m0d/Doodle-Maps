@@ -259,6 +259,34 @@ ParsedMap parse_map(char *map_json){
   return parsed_map;
 }
 
+void find_paths(ParsedMap map, Graph graph){
+  typedef struct{
+    Node *node;
+    int cost;
+    int heuristic;
+    Node *came_from;
+    struct PriorityElement *next;
+  }PriorityElement;
+
+  PriorityElement start;
+  start.cost = 0;
+  start.node = &graph.nodes[coo2index(map, map.tiles_of_interest[0])];
+
+  for(int edge_index = 0; edge_index < start.node->edges_count; edge_index++){
+    for(int i = 0; i < 2; i++){
+      if (start.node->edges[edge_index]->index_of_nodes[i] != start.node->index){
+        Node *current_node = &graph.nodes[start.node->edges[edge_index]->index_of_nodes[i]];
+        PriorityElement *new = (PriorityElement *) malloc(sizeof(PriorityElement));
+        new->node = current_node;
+        new->cost = current_node->edges[edge_index]->weight + start.cost;
+        new->heuristic = current_node->distance_to_end + new->cost;
+        new->came_from = start.node;
+        /*start.next = new;*/
+      }
+    }
+  }
+}
+
 
 void draw_map(ParsedMap parsed_map){
   //TODO compute needed memory
@@ -268,24 +296,45 @@ void draw_map(ParsedMap parsed_map){
                "xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n",
                parsed_map.draw_area[0], parsed_map.draw_area[1]);
 
+  /*char *hex_images = "<defs>\n"*/
+                     /*"<pattern id=\"pattern0\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"*/
+                     /*"<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/0.png\" />\n"*/
+                     /*"</pattern>\n"*/
+                     /*"<pattern id=\"pattern1\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"*/
+                     /*"<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/1.png\" />\n"*/
+                     /*"</pattern>\n"*/
+                     /*"<pattern id=\"pattern2\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"*/
+                     /*"<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/2.png\" />\n"*/
+                     /*"</pattern>\n"*/
+                     /*"<pattern id=\"pattern3\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"*/
+                     /*"<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/3.png\" />\n"*/
+                     /*"</pattern>\n"*/
+                     /*"<pattern id=\"pattern4\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"*/
+                     /*"<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/4.png\" />\n"*/
+                     /*"</pattern>\n"*/
+                     /*"<pattern id=\"pattern5\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"*/
+                     /*"<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/5.png\" />\n"*/
+                     /*"</pattern>\n"*/
+                     /*"</defs>";*/
+
   char *hex_images = "<defs>\n"
                      "<pattern id=\"pattern0\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
-                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/volcanos.png\" />\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons_old/volcanos.png\" />\n"
                      "</pattern>\n"
                      "<pattern id=\"pattern1\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
-                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/grassland.png\" />\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons_old/grassland.png\" />\n"
                      "</pattern>\n"
                      "<pattern id=\"pattern2\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
-                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/cactus.png\" />\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons_old/cactus.png\" />\n"
                      "</pattern>\n"
                      "<pattern id=\"pattern3\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
-                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/jungle.png\" />\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons_old/jungle.png\" />\n"
                      "</pattern>\n"
                      "<pattern id=\"pattern4\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
-                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/mountains.png\" />\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons_old/mountains.png\" />\n"
                      "</pattern>\n"
                      "<pattern id=\"pattern5\" height=\"100%\" width=\"100%\" patternContentUnits=\"objectBoundingBox\">\n"
-                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons/evergreenmountains.png\" />\n"
+                     "<image height=\"1\" width=\"1\" preserveAspectRatio=\"none\" xlink:href=\"hex_icons_old/evergreenmountains.png\" />\n"
                      "</pattern>\n"
                      "</defs>";
 
@@ -340,5 +389,6 @@ int main(int argc, char *argv[]){
   char *map_json = file_to_string(map_file);
   ParsedMap parsed_map = parse_map(map_json);
   Graph graph = create_graph(parsed_map);
-  /*draw_map(parsed_map);*/
+  /*find_paths(parsed_map, graph);*/
+  draw_map(parsed_map);
 }
