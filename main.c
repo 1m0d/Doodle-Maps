@@ -77,8 +77,8 @@ int find_distance(ParsedMap map, int from, int to){
 }
 
 int **get_neighbours(ParsedMap map, int *neighbour_count){
-  int even_row_offset[6][2] = {{-1, -1}, {-1, 0}, {0, 1}, {0, -1}, {1, 0}, {1, -1}};
-  int odd_row_offset[6][2] = {{-1, 0}, {-1, 1}, {0, 1}, {0, -1}, {1, 1}, {1, 0}};
+  int odd_row_offset[6][2] = {{-1, -1}, {-1, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 1}};
+  int even_row_offset[6][2] = {{-1, 0}, {1, -1}, {0, 1}, {0, -1}, {1, 1}, {1, 0}};
   bool memory_allocated = false;
   int neighbours_added = 0;
   int **neighbours;
@@ -88,10 +88,10 @@ int **get_neighbours(ParsedMap map, int *neighbour_count){
       for (int adjacent_tile = 0; adjacent_tile < 6; adjacent_tile++){
         int coo2check[2];
         for(int i = 0; i < 2; i++){
-          if(map.tiles[tile].coordinates[0] % 2 == 0)
-            coo2check[i] = map.tiles[tile].coordinates[i] + even_row_offset[adjacent_tile][i];
-          else
+          if(map.tiles[tile].coordinates[1] % 2 == 0)
             coo2check[i] = map.tiles[tile].coordinates[i] + odd_row_offset[adjacent_tile][i];
+          else
+            coo2check[i] = map.tiles[tile].coordinates[i] + even_row_offset[adjacent_tile][i];
         }
         if(coo2check[0] >= 0 && coo2check[1] >= 0 && get_tile_weight(map, coo2check) != 0){
           if(tile < coo2index(map, coo2check)){  //don't create duplicate data of same neighbours
@@ -356,7 +356,7 @@ void draw_map(ParsedMap parsed_map){
     if (row % 2 != 0)
       horizontal_margin += width/2;
     for(int column = 0; column < parsed_map.size[0]; column++){
-      int coordinates[2] = {row, column};
+      int coordinates[2] = {column, row};
       int weight = get_tile_weight(parsed_map, coordinates);
       sprintf(hex, "<polygon class=\"hex\" fill=\"url(#pattern%d)\" stroke=\"black\" stroke-width=\"1\" "
                    "points=\"%d,%d %d,%d %d,%d %d,%d %d,%d %d,%d\" transform = \"translate(%d,%d)\"></polygon>\n",
