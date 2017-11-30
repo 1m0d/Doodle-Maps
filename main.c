@@ -25,6 +25,7 @@ typedef struct{
 }Edge;
 
 typedef struct{
+  int index;
   int distance_to_end;
   int edges_count;
   Edge **edges;
@@ -166,10 +167,10 @@ Graph create_graph(ParsedMap map){
     }
   }
 
-  /*assign distance to nodes*/
+  /*assign distance and index to nodes*/
   for(int i = 0; i < graph.size; i++){
     nodes[i].distance_to_end = find_distance(map, i, coo2index(map, map.tiles_of_interest[1]));
-    printf("node %d:%d distance_to_end: %d\n", map.tiles[i].coordinates[0], map.tiles[i].coordinates[1], nodes[i].distance_to_end);
+    nodes[i].index = i;
   }
   return graph;
 }
