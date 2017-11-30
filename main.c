@@ -36,7 +36,7 @@ typedef struct{
 }Graph;
 
 int get_tile_weight(ParsedMap map, int coordinates[2]){
-  for(int i = 0; i < map.size[0] * map.size[1]; i++){
+  for(int i = 0; i < map.tile_count; i++){
     if(coordinates[0] == map.tiles[i].coordinates[0] && coordinates[1] == map.tiles[i].coordinates[1])
       return map.tiles[i].weight;
   }
