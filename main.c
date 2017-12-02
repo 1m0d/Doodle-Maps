@@ -128,8 +128,8 @@ Graph create_graph(ParsedMap map){
   int *edge_countPtr = &edge_count;
   int **neighbours = get_neighbours(map, edge_countPtr);
 
-  Node nodes[graph.size];
-  Edge edges[edge_count];
+  Node *nodes = (Node *) malloc(sizeof(Node) * graph.size);
+  Edge *edges = (Edge *) malloc(sizeof(Edge) * edge_count);
 
   //create edges
   for(int i = 0; i < edge_count; i++){
