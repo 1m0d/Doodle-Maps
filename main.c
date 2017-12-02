@@ -172,6 +172,7 @@ Graph create_graph(ParsedMap map){
     nodes[i].distance_to_end = find_distance(map, i, coo2index(map, map.tiles_of_interest[1]));
     nodes[i].index = i;
   }
+  graph.nodes = nodes;
   return graph;
 }
 
