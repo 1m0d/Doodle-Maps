@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I. -g -lm
+CFLAGS=-I. -lm
 
 main:
-	     $(CC) -o map_print main.c cJSON.c $(CFLAGS)
+	     $(CC) -o run src/main.c src/cJSON.c src/parse_map.c src/map_to_graph.c src/a_star.c src/draw_map.c $(CFLAGS)
