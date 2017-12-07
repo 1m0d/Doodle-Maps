@@ -1,3 +1,2 @@
-*.svg
-*.png
-map_print
+.gdb_history
+run
