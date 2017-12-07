@@ -11,7 +11,7 @@
     "tiles_of_interest":[[2, 3], [2, 1]]
   },
   "svg":{
-    "hexagon_height":120,
+    "hexagon_height":140,
     "draw_area":[1280, 720]
   }
 }
