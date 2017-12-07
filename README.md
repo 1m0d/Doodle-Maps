@@ -1,5 +1,7 @@
 # Doodle Maps
 
+#### TODO translate readme and developer documentaion
+
 ### Altalanos leiras
 
 A program egy hexagon alapu terkepet, es ket koordinatat kap bemenetnek.
